@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { View, ScrollView, Text, Image, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { priceDisplay } from '../util';
 import ajax from '../ajax';
@@ -9,6 +9,7 @@ import ajax from '../ajax';
 class DealDetail extends React.Component {
     static propTypes = {
         initialDealData: PropTypes.object.isRequired,
+        onBack: PropTypes.func.isRequired,
     };
 
     state = {
@@ -26,6 +27,9 @@ class DealDetail extends React.Component {
         const { deal } = this.state;
         return (
             <View style={styles.deal}>
+                <TouchableOpacity onPress={this.props.onBack}>
+                    <Text style={styles.backLink}>⬅️ Back</Text>
+                </TouchableOpacity>
                 <Image
                     source={{uri: deal.media[0]}}
                     style={styles.image}
@@ -57,15 +61,13 @@ class DealDetail extends React.Component {
 
 const styles = StyleSheet.create({
     deal: {
-        marginTop: 50,
+        marginTop: 60,
         marginBottom: 20,
-        marginHorizontal: 12,
-        borderColor: '#bbb',
-        borderWidth: 1,
     },
     backLink: {
+        marginTop: 5,
         marginBottom: 5,
-        color: '#22f',
+        color: '#rgb(109,132,158)',
         marginLeft: 10,
     },
     image: {
@@ -103,9 +105,6 @@ const styles = StyleSheet.create({
         borderRadius: 30,
     },
     description: {
-        borderColor: '#ddd',
-        borderWidth: 1,
-        borderStyle: 'dotted',
         margin: 10,
         padding: 10,
     },

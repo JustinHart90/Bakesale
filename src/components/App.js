@@ -3,25 +3,42 @@ import { View, Text, StyleSheet } from 'react-native';
 import ajax from '../ajax';
 import DealList from './DealList';
 import DealDetail from './DealDetail';
+import SearchBar from './SearchBar';
 
 class App extends React.Component {
     state = {
         deals: [],
+        dealsFromSearch: [],
         currentDealId: null,
     }
 
     async componentDidMount() {
         const deals = await ajax.fetchInitialDeals();
-        console.log(deals);
 
         this.setState(() => {
             return { deals };
         });
     };
 
+    searchDeals = async (searchTerm) => {
+        let dealsFromSearch = [];
+
+        if (searchTerm) {
+            dealsFromSearch = await ajax.fetchDealsSearchResults(searchTerm);            
+        }
+
+        this.setState({ dealsFromSearch });
+    };
+
     setCurrentDeal = (dealId) => {
         this.setState({
-            currentDealId: dealId
+            currentDealId: dealId,
+        });
+    };
+    
+    unsetCurrentDeal = (dealId) => {
+        this.setState({
+            currentDealId: null,
         });
     };
 
@@ -31,11 +48,26 @@ class App extends React.Component {
 
     render() {
         if (this.state.currentDealId) {
-            return <DealDetail initialDealData={this.currentDeal()}/>
+            return (
+                <DealDetail
+                        initialDealData={this.currentDeal()}
+                        onBack={this.unsetCurrentDeal}
+                />
+            );
         }
 
-        if (this.state.deals.length > 0) {
-            return <DealList deals={this.state.deals} onItemPress={this.setCurrentDeal} />
+        const dealsToDisplay =
+            this.state.dealsFromSearch.length > 0
+            ? this.state.dealsFromSearch
+            : this.state.deals;
+
+        if (dealsToDisplay.length > 0) {
+            return (
+                <View style={styles.main}>
+                    <SearchBar searchDeals={this.searchDeals} />
+                    <DealList deals={dealsToDisplay} onItemPress={this.setCurrentDeal} />
+                </View>
+            );
         }
         return (
             <View style={styles.container}>
@@ -54,7 +86,9 @@ const styles = StyleSheet.create({
         paddingTop: 100,
         paddingBottom: 100,
     },
-
+    main: {
+        marginTop: 50,
+    },
     title: {
         fontSize: 40,
     }
