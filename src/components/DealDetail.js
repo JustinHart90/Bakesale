@@ -6,11 +6,13 @@ import {
     ScrollView,
     Text,
     Image,
+    Button,
     StyleSheet,
     TouchableOpacity,
     PanResponder,
     Animated,
-    Dimensions
+    Dimensions,
+    Linking
 } from 'react-native';
 
 import { priceDisplay } from '../util';
@@ -79,6 +81,10 @@ class DealDetail extends React.Component {
         });
     }
 
+    openDealUrl = () => {
+        Linking.openURL(this.state.deal.url);
+    };
+
     render() {
         const { deal } = this.state;
         return (
@@ -110,6 +116,7 @@ class DealDetail extends React.Component {
                     <View style={styles.description}>
                         <Text>{deal.description}</Text>
                     </View>
+                    <Button title="Buy this deal! " onPress={this.openDealUrl} />
                 </ScrollView>
             </View>
         );
