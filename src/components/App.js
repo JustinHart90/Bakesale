@@ -17,6 +17,7 @@ class App extends React.Component {
         currentDealId: null,
         animationCount: 0,
         canvas: null,
+        activeSearchTerm: '',
     }
 
     animateTitle = (direction = 1) => {
@@ -69,7 +70,7 @@ class App extends React.Component {
             dealsFromSearch = await ajax.fetchDealsSearchResults(searchTerm);            
         }
 
-        this.setState({ dealsFromSearch });
+        this.setState({ dealsFromSearch, activeSearchTerm: searchTerm });
     };
 
     setCurrentDeal = (dealId) => {
@@ -112,7 +113,10 @@ class App extends React.Component {
         if (dealsToDisplay.length > 0) {
             return (
                 <View style={styles.main}>
-                    <SearchBar searchDeals={this.searchDeals} />
+                    <SearchBar 
+                        searchDeals={this.searchDeals}
+                        initialSearchTerm={this.state.activeSearchTerm}
+                    />
                     <DealList deals={dealsToDisplay} onItemPress={this.setCurrentDeal} />
                 </View>
             );
